@@ -1,0 +1,302 @@
+---
+title: "PUBH 7462 Flexdashboard"
+author: "Jack Rabe"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+
+```{r setup, include = FALSE, echo = FALSE}
+library(tidyverse)
+library(lubridate)
+library(gt)
+library(paletteer)
+library(plotly)
+library(flexdashboard)
+
+#Working directory for .RMD
+knitr::opts_knit$set(echo = TRUE,
+                     root.dir = rprojroot::find_rstudio_root_file())
+
+#Controlling figure output in markdown
+knitr::opts_chunk$set(
+#  fig.height =   
+  fig.width = 6,
+#  fig.asp = .5,
+  out.width = "90%",
+#  out.height = 
+ fig.align  = "center",
+  cache = FALSE,
+  eval  = TRUE,
+  echo  = TRUE,
+  warning = FALSE
+)
+
+#My Colours (from viridis)
+my_purple <- "#440154FF"
+my_yellow <- "#FDE725FF"
+
+#Set Theme for ggplot2
+theme_set(theme_bw() + theme(plot.title = element_text(hjust = 0.5), legend.position = "bottom"))
+
+#Set Scientific notation output and decimal places for knitr
+options(scipen = 999)
+options(digits = 4)
+options(dplyr.summarise.inform = FALSE)
+```
+
+
+```{r, include = FALSE}
+#load instacart data
+insta.df <- read.csv(file = "./data/instacart.csv", header = TRUE) %>% 
+  as_tibble() 
+
+#Top 6 departments
+top_6 <- insta.df %>%
+  pull(department) %>% #extract aisle
+  fct_count() %>% #returns tibble with column:f (factor). n (count) 
+  arrange(desc(n)) %>% #put in descending order from greatest to least 
+  slice(1:6) %>% #top5
+  pull(f)
+#Display ggplot
+top_6.gg <- insta.df %>%
+  filter(department %in% top_6) %>% 
+  group_by(aisle, department) %>% 
+  summarise(n = n()) %>% arrange(desc(n)) %>% 
+  group_by(department) %>% 
+  slice(1:6) %>%
+  ungroup() %>%
+  mutate(
+    department = str_to_title(department) %>% 
+      as_factor() %>%
+      fct_reorder(n, .desc = TRUE) %>% 
+      str_c(as.numeric(.), ., sep = ". "), 
+    aisle = str_to_title(aisle) %>%
+           as_factor() %>%
+           fct_reorder2(department, n, .desc = FALSE)
+) %>%
+ggplot(aes(x = n, y = aisle, fill = n)) +
+geom_bar(stat = "identity", width = 1, colour = "black") + 
+  labs(x = "Number of Orders", 
+       y = "Aisle", 
+       title = "Top 6 Orders in the Top 6 Departments") +
+theme(legend.position = "right",
+      axis.text.y = element_text(color = "black", 
+                                 size = 10,
+                                 hjust = 1)) + 
+  scale_fill_viridis_c("# Orders", 
+                       option = "magma",
+                       alpha = 0.8,
+                       direction = -1) +
+  facet_wrap(~ department, scales = "free", ncol = 2) + 
+  theme(axis.text.x = element_text(angle = 45,
+                                   vjust = 1.24, 
+                                   hjust = 1.2, 
+                                   size = 10), 
+        axis.text.y = element_text(size = 10))
+
+#ggplotly() + tooltip to control label
+ggplotly(top_6.gg, tooltip = "text") #tooltip controls text hover/label
+```
+
+
+
+```{r, include = FALSE}
+#load lakers data set
+data(lakers)
+
+#Convert to date/times appropriately
+lakers.df <- lakers %>%
+  mutate(
+    date    = ymd(date),
+    time    = ms(time),
+    etype   = as.factor(etype),
+    type    = case_when(
+               type %in% "3pt"           ~ "3 Pointer",
+               str_detect(type, "layup") ~ "Layup",
+               str_detect(type, "dunk")  ~ "Dunk",
+               str_detect(type, "jump")  ~ "Jumpshot",
+               TRUE                      ~ "Other"
+              ),
+    month   = month(date, label = TRUE, abbr = TRUE),
+    dow     = wday(date, #day of the week
+                   label = TRUE, #return name i.e "Friday"
+                   abbr  = FALSE, #Return full name
+                   week_start = getOption("lubridate.week.start", 1)), #1 = Monday
+    quarter = period
+  ) %>%
+  dplyr::select(-period)
+
+#Remove lakers for clarity
+remove(lakers)
+
+#now make plot
+shot_per_gg <- lakers.df %>%
+  filter(etype %in% "shot", quarter %in% 1:4) %>%
+  group_by(date, quarter, type) %>%
+  summarise(
+    sht_pct = mean((result %in% "made"))
+  ) %>%
+  ungroup() %>%
+  mutate(
+    type    = str_to_title(type) %>%
+              as.factor() %>%
+              fct_reorder(sht_pct, .desc = TRUE),
+    quarter = str_c("Quarter ", quarter) %>%
+              as_factor()
+  ) %>%
+  ggplot(aes(x = date, y = sht_pct, colour = type)) +
+  geom_point(alpha    = 0.16,
+             shape    = 16,
+             size     = 2,
+             position = position_jitter(width  = 0, 
+                                        height = 0.05)) +
+  stat_smooth(method  = "loess", 
+              formula = "y ~ x",
+              se      = FALSE,
+              span    = 0.5,
+              alpha   = 0.44) +
+    labs(
+      x = "Date",
+      y = "Shooting Percentage",
+      title = "Shooting Percentage by Type and Quarter (Lakers 08-09)"
+    ) +
+    scale_colour_viridis_d("Type of Shot") +
+    scale_x_date( #The date equiv of scale_x_continuous
+    date_breaks = "1 month", #Breaks
+    date_minor_breaks = "1 month", #Little lines in between
+    date_labels = "%b '%y" #Label for the date
+    ) +
+    facet_wrap(~quarter, ncol = 2) +
+    theme(axis.text.x = element_text(angle = 45,
+                                     vjust = 1.24,
+                                     hjust = 1.2,
+                                     size  = 10),
+          axis.text.y = element_text(size  = 10),
+          axis.title.x = element_text(margin = margin(t = 20)))
+
+#ggplotly() + tooltip to control label
+ggplotly(shot_per_gg, tooltip = "text") #tooltip controls text hover/label
+```
+
+
+
+```{r, include = FALSE}
+#Extract every data file about covid
+covid_file_list <- list.files(path = "./data/", pattern = c("covid19")) #this still has one file we don't want
+
+#Now remove aggregate file so we just have country-specific files
+covid_file_list <- covid_file_list[!str_detect(covid_file_list, "aggregate")]
+
+#Create a tibble to read in the data
+covid.df <- tibble(
+          file_dir   = "./data/", #directory
+          file_list  = covid_file_list, #file_list from above
+          data_name  = str_split(string = file_list,
+                                 pattern = "_", 
+                                 n = 2) %>% #extract name/iter (i.e, covid19/continent)
+                       map_chr(2),
+          continent       = map2_chr(.x = data_name, #extract just continents 
+                                .y = ".csv", #the data type ending
+                                ~str_remove(.x, .y)) %>% #removing the data type end to retain just the continent
+                            str_replace( "_", " ") %>%  #remove underscores and replace with spaces
+                            str_to_title(), #capitalize continents
+          file_paths = str_c(file_dir, file_list) #combine together for full filepath
+          )
+
+#now lets read in the data
+#Nested/grouped structure
+covid_nest.df <- covid.df %>%
+  mutate(
+    data = map(.x = file_paths, ~read_csv(.x, show_col_types = FALSE)) #Pay attention to the filetype in the read
+  ) %>%
+  dplyr::select(!contains(c("file", "name"))) %>%
+  arrange(continent) 
+
+#now display the unnested data
+covid_unnested.df <- covid_nest.df %>%
+  unnest(data)
+
+#now tidy up the data
+covid_tidy.df <- covid_unnested.df %>% 
+  replace(is.na(.), 0) %>% #transform all NAs in df to 0 for using cumsum later
+  mutate(
+    continent = as.factor(continent), #change to factor
+    location = as.factor(location), #change to factor
+    date = ymd(date), #looks like already in date format but just to be sure
+    month   = month(date, label = TRUE, abbr = TRUE), #create abbreviated month variable
+    dow     = wday(date, #create day of the week variable
+                   label = TRUE, #return name i.e "Friday"
+                   abbr  = FALSE, #Return full name
+                   week_start = getOption("lubridate.week.start", 1)) #start week on Monday
+  ) %>% 
+  rename(country = location) %>% 
+  group_by(continent, country) %>%  
+  mutate(
+    total_cases = cumsum(new_cases), #running total sum of cases by country
+    total_deaths = cumsum(new_deaths) #running total sum of deaths by country
+  )
+```
+
+
+
+```{r, include = FALSE}
+#create new df with cases, deaths, and rolling avg for both to make plots
+covid_roll.df <- covid_tidy.df %>% 
+  group_by(date) %>% 
+  summarise(
+    global_new_cases = sum(new_cases), #summarize all cases and deaths recorded on each date
+    global_new_cases_smoothed = sum(new_cases_smoothed),
+    global_new_deaths = sum(new_deaths),
+    global_new_deaths_smoothed = sum(new_deaths_smoothed)
+  )
+
+#plotly rolling average of cases
+covid_cases.plot <- covid_roll.df %>% 
+  plot_ly(x = ~date) %>%
+  add_trace(y = ~global_new_cases,
+            type = 'bar',
+            name = 'New Cases',
+            marker = list(color = "#FF9933")) %>% 
+  add_trace(y = ~global_new_cases_smoothed, 
+            type = 'scatter',  
+            mode = 'lines',
+            name = '7-day average',
+            line = list(color = "CC6600", 
+                        width = 3)) %>% 
+  layout(yaxis = list(title = "Cases"),
+         xaxis = list(title = "Date",
+                      tickangle = 330),
+         title = "Global Daily COVID-19 Cases",
+         legend = list(orientation = 'h'))
+
+covid_cases.plot
+```
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Instacart Shopping
+
+```{r, echo=FALSE}
+ggplotly(top_6.gg, tooltip = "text") #tooltip controls text hover/label
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Lakers Shooting Percentage
+
+```{r, echo=FALSE}
+ggplotly(shot_per_gg, tooltip = "text") #tooltip controls text hover/label
+```
+
+### Covid Cases
+
+```{r, echo=FALSE}
+covid_cases.plot
+```
+
