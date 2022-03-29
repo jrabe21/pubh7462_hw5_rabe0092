@@ -3,7 +3,7 @@ title: "Jack Rabe"
 ---
 
 <div style= "float : left; position : relative; top: 0px; width : 450px; height : 525px; padding-right: 24px; margin-bottom : 0px">
-![Tracking wolves on a snowy hike in Yellowstone](Rabe_Jack_bio.jpg)
+![Tracking wolves on a snowy hike in Yellowstone](./website_template/Rabe_Jack_bio.jpg)
 
 </div>
 
