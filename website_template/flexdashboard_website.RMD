@@ -62,9 +62,11 @@ penguin.df <- penguin.df %>%
 flip_bill.gg <- penguin.df %>% 
   ggplot(aes(x = bill_length_mm,
              y = flipper_length_mm,
-             colour = species,
-             text = text_label)) + 
-  geom_point(alpha = 0.4, shape = 16, size = 2) +
+             colour = species)) + 
+  geom_point(aes(text = text_label),
+             alpha = 0.4, 
+             shape = 16,
+             size = 2) +
   stat_smooth(method  = "lm", 
               formula = "y ~ x",
               se      = FALSE,
@@ -141,9 +143,9 @@ shot_prop_gg <- prop_shot.df %>%
   ) %>%
   ggplot(aes(x = date, 
              y = prop, 
-             colour = type,
-             text = text_label)) +
-  geom_point(alpha    = 0.16,
+             colour = type)) +
+  geom_point(aes(text = text_label),
+             alpha    = 0.16,
              shape    = 16,
              size     = 2,
              position = position_jitter(width  = 0, 
@@ -274,7 +276,7 @@ covid_cases.plot
 Column {data-width=500}
 -----------------------------------------------------------------------
 
-### Instacart Shopping
+### Penguin Size Differences
 
 ```{r, echo=FALSE}
 ggplotly(flip_bill.gg, tooltip = "text") #tooltip controls text hover/label
