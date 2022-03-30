@@ -3,6 +3,8 @@ title: "Resume / CV"
 author: "Jack Rabe"
 date: "3/30/2022"
 output: html_document
+geometry: margin = 1in
+
 ---
 
 # Contact Information

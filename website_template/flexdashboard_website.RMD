@@ -48,59 +48,37 @@ options(dplyr.summarise.inform = FALSE)
 ```
 
 
-```{r, include = FALSE}
-#load instacart data
-insta.df <- read.csv(file = "./data/instacart.csv", header = TRUE) %>% 
-  as_tibble() 
 
-#Top 6 departments
-top_6 <- insta.df %>%
-  pull(department) %>% #extract aisle
-  fct_count() %>% #returns tibble with column:f (factor). n (count) 
-  arrange(desc(n)) %>% #put in descending order from greatest to least 
-  slice(1:6) %>% #top5
-  pull(f)
-#Display ggplot
-top_6.gg <- insta.df %>%
-  filter(department %in% top_6) %>% 
-  group_by(aisle, department) %>% 
-  summarise(n = n()) %>% arrange(desc(n)) %>% 
-  group_by(department) %>% 
-  slice(1:6) %>%
-  ungroup() %>%
-  mutate(
-    department = str_to_title(department) %>% 
-      as_factor() %>%
-      fct_reorder(n, .desc = TRUE) %>% 
-      str_c(as.numeric(.), ., sep = ". "), 
-    aisle = str_to_title(aisle) %>%
-           as_factor() %>%
-           fct_reorder2(department, n, .desc = FALSE)
-) %>%
-ggplot(aes(x = n, y = aisle, fill = n)) +
-geom_bar(stat = "identity", width = 1, colour = "black") + 
-  labs(x = "Number of Orders", 
-       y = "Aisle", 
-       title = "Top 6 Orders in the Top 6 Departments") +
-theme(legend.position = "right",
-      axis.text.y = element_text(color = "black", 
-                                 size = 10,
-                                 hjust = 1)) + 
-  scale_fill_viridis_c("# Orders", 
-                       option = "magma",
-                       alpha = 0.8,
-                       direction = -1) +
-  facet_wrap(~ department, scales = "free_y", ncol = 2) + 
-  theme(axis.text.x = element_text(angle = 45,
-                                   vjust = 1.24, 
-                                   hjust = 1.2, 
-                                   size = 10), 
-        axis.text.y = element_text(size = 10))
+```{r, include=FALSE}
+#Read data with relative path
+penguin.df <- read_rds("./data/penguin.RDS")
+
+penguin.df <- penguin.df %>% 
+  mutate(text_label    = str_c(species, #add as text aesthetic
+                          "\nBill Length - ", bill_length_mm, "mm", 
+                          "\nFlipper Length - ", flipper_length_mm, "mm"))
+
+#ggplot
+flip_bill.gg <- penguin.df %>% 
+  ggplot(aes(x = bill_length_mm,
+             y = flipper_length_mm,
+             colour = species,
+             text = text_label)) + 
+  geom_point(alpha = 0.4, shape = 16, size = 2) +
+  stat_smooth(method  = "lm", 
+              formula = "y ~ x",
+              se      = FALSE,
+              span    = 0.5,
+              alpha   = 0.44) +
+  labs(title = "Palmer Station Penguins' Flipper Length by Bill Length and Species", 
+       x = "Bill Length (mm)",
+       y = "Flipper Length (mm)") + 
+  scale_colour_viridis_d("Species") +
+  theme(legend.position = "bottom")
 
 #ggplotly() + tooltip to control label
-ggplotly(top_6.gg, tooltip = "text") #tooltip controls text hover/label
+ggplotly(flip_bill.gg, tooltip = "text") #tooltip controls text hover/label
 ```
-
 
 
 ```{r, include = FALSE}
@@ -156,9 +134,15 @@ shot_prop_gg <- prop_shot.df %>%
     game_type = as.factor(game_type) %>%
                 fct_recode("Home" = "home", 
                            "Away" = "away") %>%
-                fct_relevel("Home")
+                fct_relevel("Home"),
+    text_label = str_c(type, #add as text aesthetic
+                       "\n", date,
+                       "\nproportion - ", round(prop, 2))
   ) %>%
-  ggplot(aes(x = date, y = prop, colour = type)) +
+  ggplot(aes(x = date, 
+             y = prop, 
+             colour = type,
+             text = text_label)) +
   geom_point(alpha    = 0.16,
              shape    = 16,
              size     = 2,
@@ -293,7 +277,7 @@ Column {data-width=500}
 ### Instacart Shopping
 
 ```{r, echo=FALSE}
-ggplotly(top_6.gg, tooltip = "text") #tooltip controls text hover/label
+ggplotly(flip_bill.gg, tooltip = "text") #tooltip controls text hover/label
 ```
 
 Column {data-width=500}
