@@ -1,0 +1,111 @@
+---
+title: "Resume / CV"
+author: "Jack Rabe"
+date: "3/30/2022"
+output: html_document
+---
+
+# Contact Information
+
+PO Box 513
+
+Gardiner, MT
+
+Cell: (440) 969-3226
+
+email: Jrabe2123@gmail.com
+
+# Education:
+
+* Fall 2020- Present, Pursuing a Ph.D. in the Conservation Sciences Graduate Program at University of Minnesota – Twin Cities, studying predator-prey dynamics in Yellowstone National Park under advisor Dr. Joseph Bump
+
+* 2017, The Ohio State University–Columbus, Ohio, B.S. Environmental Science, Major Field of Study: Forestry, Fisheries, and Wildlife, Specialization: Wildlife Science, Graduation Date: May 7, 2017; Dean’s List 2013-2017, Graduated Magna Cum Laude
+
+# Work Experience:
+
+**Yellowstone Forever (YF) in collaboration with the National Park Service (NPS) – Yellowstone National Park, WY – Yellowstone Wolf Project, Yellowstone Cougar Project, Yellowstone Elk Project – Full-time Biological Technician**
+
+May 11, 2017 - August 4, 2017 and November 12, 2017 – August 28, 2020
+
+Supervisor: Doug Smith, Yellowstone Wolf Project Leader, Yellowstone Bird Project Leader, Yellowstone National Park. PO Box 168, Officer’s Row, Building 27. Yellowstone Center for Resources, Yellowstone National Park, WY.
+
+As a full-time technician, I worked on the Yellowstone Wolf, Cougar, and Elk Projects for over 3 years. Thanks to the diversity of wildlife and world-renowned research opportunities, I was able to immerse myself in a wide range of projects. From watching wolves in the dead of winter from sunrise to sunset, to necropsying kills made by wolves and cougars the week before, to tracking animals from cars and fixed-wing planes; there was no shortage of field work to take part in. In my last two years, I helped lead many of these field operations day in and day out, managing data, field work, and the dozens of volunteers that help us throughout the year. 
+
+With the wolf project, I did many of the tasks above, including assisting with winter captures and handling of wolves. From the spring of 2018 to 2019, I was the lead observation and outreach technician, spending my mornings and evenings watching wolves and engaging with visitors. Unfortunately, this often involved mitigating a lesser-known human-wildlife conflict between man and wolf. As I’m sure you’re familiar with, certain wolves who frequently exposed to people, receive food rewards, or must constantly interact with the road to move through their territory can become habituated. To prevent or stop habituation, this usually involves hazing the wolves when they linger around roads or people, as well as communicating with the public to inform their behavior and prevent them from contributing to animal habituation.
+
+With the cougar project, I played an integral role in our winter cougar capture operations, assisted with snow tracking surveys to gather genetics, searching cougar kill sites, and set numerous trail cameras to monitor the population (and to get awesome footage if we’re being honest).
+
+Outside of predator work, I spent the past year as the lead elk project technician in addition to the above roles. This mostly involved ground and periodic aerial monitoring of collared elk, as well as occasional trips to recover dropped collars or necropsy dead elk. Because elk winter ranges coincide with many private lands and ranches north of the park boundary (another major human-wildlife conflict aside from the wolf-elk debate), I would occasionally need to communicate with a broad spectrum of private landowners to gain permission to retrieve these collars or dead elk from their property.
+
+Aside from research and management, moving to arguably my most important role, was education and outreach. One of the beauties of Yellowstone is how far-reaching and impactful it can be to people across the globe. As a result, I’ve given numerous formal and informal talks to the general public, grade school and college level classes, park guides, politicians, fellow researchers, and more. I’ve done a handful of interviews about wolves and other wildlife in Yellowstone, ranging from local newspapers to the PBS-BBC collaborative docuseries “Age of Nature” that has yet to be released. Most of these interviews and talks of been directly tied to discussing human-wildlife conflicts between wolves and people, one of the most polarizing wildlife issues in the world. Last but not least, I’ve written articles for local papers, several summary reports for the education program, assisted with wolf project annual reports, and helped work on our recent book, Yellowstone Wolves: Science and Discovery in the World’s First National Park.
+	
+**United States Fish and Wildlife Service (FWS) – Farallon National Wildlife Refuge, Fremont, CA – FWS Directorate Fellowship Program (DFP) – Wildlife Fellow**
+
+Jun 6, 2016 - Aug 19, 2016
+
+Supervisor: Gerry McChesney, Refuge Manager, Farallon National Wildlife Refuge
+
+1 Marshlands Rd., Farallon Office Fremont, CA.
+
+As a wildlife fellow through the Directorate Fellowship Program, I was responsible for carrying out a diversity of tasks both in and out of the field in a highly independent setting. From a management perspective, my main task involved invasive plant control of a multitude of invasive plant species that negatively impacted seabird nesting habitat. This consisted of herbicide treatment with a backpack sprayer and pulling vegetation on rough, rocky terrain while minimizing seabird breeding disturbance. While the majority of treatments were conducted independently or with a supervisor, one week was spent co-leading an invasive plant crew to ensure tasks were adequately distributed among the group and that those tasks were completed in a timely manner. Furthermore, I conducted applied research regarding invasive plant phenology, western gull nest disturbance assessments as a response to invasive plant treatment, and nocturnal callback surveys of the endangered Ashy-Storm Petrel to assess habitat use of artificial structures. After the completion of field research, I was responsible for organizing and extrapolating the data as well as developing written reports regarding the plant phenology study and callback study. While on the refuge, free time was spent assisting Point Blue Conservation Science (formerly Point Reyes Bird Observatory) with seabird banding through mist-netting and capture of chicks, diet watches and nest checks to assess breeding success, and assisting with landing operations to bring gear and personnel both on and off the island.
+
+**The Wilds, Cumberland, OH – Wildlife Ecology and Conservation Research Intern**
+
+Late May, 2015 – Early August, 2015
+
+Supervisor: Joe Greathouse, Assistant Professor of Biology, West Liberty University (Former Director of Wildlife Ecology, The Wilds)
+
+208 University Drive
+
+
+As a wildlife ecology intern at The Wilds, I was responsible for independently conducting field research, analyzing data, compiling a manuscript, and presenting my findings to facility professionals through both a formal and poster presentation. My independent work focused on assessing landscape characteristics of ruffed grouse habitat by walking line transects and recording the number of drumming individuals along right-of-ways and other forest edges over a period of three months. ArcGIS was then used in accordance with the National Land Cover Database to determine land cover around each transect. In addition to my own research project, I assisted one of my peers with conducting all of their camera trap surveys aimed at mapping the distribution of coyote, bobcat, and prey populations. Lastly, I gained basic skills in the capturing and sampling of salamanders while assisting peers with their research projects.
+
+# Job-Related Training Courses:
+
+*	DOI-IAT Fixed-Wing Flight Manager (HazMat Required), Yellowstone National Park, WY, Oct. 2018
+*	DOI-IAT Aircrew Member (HazMat Required), Yellowstone National Park, WY, Aug. 2018
+*	DOI-NPS Aversive Conditioning Paintball Training, Yellowstone National Park, WY, May 2018
+*	DOI-NPS Avalanche Training, Yellowstone National Park, WY, Feb. 2018
+*	DOI-NPS Snowmobile Training, Yellowstone National Park, WY, Jan. 2018
+*	Herbicide Application and Mixing, San Francisco, OH, Jun. 2016
+*	First-aid and CPR, Univ. of Minn., Minneapolis, MN, Jan. 2022
+*	Stone Laboratory Fish Sampling Workshop, Put-in-Bay, OH, Sep. 2015
+
+# Publications and Reports: 
+
+In prep: **Rabe, J.W.** 2021. Trophic cascades in Yellowstone: A lesson in food web complexity. (Author list subject to change, currently in editing and journal selection stage)
+
+In prep: SunderRaj, J.D., **J.W. Rabe**, K.A. Cassidy, R. McIntyre, D.R. Stahler, D.W. Smith. 2021. Breeding displacement in gray wolves (Canis lupus): Three males usurp breeding position and pup rearing from a neighboring pack in Yellowstone National Park. (Submitted and currently under peer review with PLOS One)
+
+Cassidy, K.A., D.W. Smith, D.R. Stahler, E. Stahler, M. Metz, C. Meyer, J. SunderRaj, M. Jackson, W. Binder, B. Cassidy, **J. Rabe**, N. Tatton. 2021. Yellowstone National Park Wolf Project Annual Report 2020. National Park Service, Yellowstone Center for Resources, Yellowstone National Park, WY, USA, YCR-2021-**.
+
+Smith, D.W., D.R. Stahler, K.A. Cassidy, E. Stahler, M. Metz, C. Meyer, **J. Rabe**, N. Tatton, J. SunderRaj, L. Carroll, M. Jackson, B. Cassidy, E. Loggers. 2020. Yellowstone National Park Wolf Project Annual Report 2019. National Park Service, Yellowstone Center for Resources, Yellowstone National Park, WY, USA, YCR-2020-01. 
+
+Smith, D., D. Stahler, K. Cassidy, E. Stahler, M. Metz, B. Cassidy, L. Koitzsch, L. Cato, C. Meyer, E. Loggers, **J. Rabe**, N. Tatton, R. Thomas-Kuzilik, and K. Koitzsch. 2019. Yellowstone National Park Wolf Project Annual Report 2018. National Park Service, Yellowstone Center for Resources, Yellowstone National Park, WY, USA, YCR-2019-05. 
+
+**Rabe, J.** 2016. Phenology of invasive plants on Southeast Farallon Island, summer 2016. Unpublished report, U.S. Fish and Wildlife Service, Farallon National Wildlife Refuge, Fremont, California. 28 pp. 
+
+**Rabe, J.** and G.J. McChesney. 2016. Assessment of storm-petrel use of certain artificial habitats on Southeast Farallon Island, 2016. Unpublished report, U.S. Fish and Wildlife Service, Farallon National Wildlife Refuge, Fremont, California. 10 pp. 
+
+McChesney, G.J., J. Shore, and **J. Rabe.** 2016. Pilot study to assess disturbance to western gull nests during invasive plant control efforts. Unpublished protocol, U.S. Fish and Wildlife Service, Farallon National Wildlife Refuge, Fremont, California. 4 pp. 
+
+Cook, C. and **J. Rabe.** 2016. Farallon islands plant phenology protocol. Unpublished protocol, U.S. Fish and Wildlife Service, Farallon National Wildlife Refuge, Fremont, California. 8 pp. 
+
+**Rabe, J.** 2016. The effects of environmental variables on sora presence in a Lake Erie coastal marsh. Unpublished manuscript, The Ohio State University, Columbus, Ohio. 18 pp. 
+
+# References:
+
+**Douglas Smith**, Yellowstone Wolf Project Leader, Yellowstone National Park
+P.O. Box 168, Officer’s Row, Building 27. Yellowstone Center for Resources
+Yellowstone National Park, WY. (307)-344-2242 Email: doug_smith@nps.gov 
+
+**Daniel Stahler**, Yellowstone Cougar Project Leader and Yellowstone Wolf Project Biologist, Yellowstone National Park
+P.O. Box 168, Officer’s Row, Building 27. Yellowstone Center for Resources
+Yellowstone National Park, WY. (307)-344-2719 Email: dan_stahler@nps.gov 
+
+**Dr. L. David Mech**, US Geological Survey and University of Minnesota Adjunct Professor
+Email: mechx002@umn.edu
+
+**Dr. Gabriel Karns**, Assistant Professor, School of Environment and Natural Resources, The Ohio State University
+2021 Coffey Rd.
+Columbus, OH. (614)-292-3865 Email: karns.36@osu.edu

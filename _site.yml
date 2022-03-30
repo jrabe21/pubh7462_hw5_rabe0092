@@ -15,6 +15,7 @@ navbar:
     - text: "Professional Documents"
       menu:
       - text: "Resume/CV"
+        href: ./website_template/resume.html
     - text: "About"
       href: ./website_template/about.html
     - icon: fa-envelope fa-lg
