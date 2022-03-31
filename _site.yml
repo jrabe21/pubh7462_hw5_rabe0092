@@ -14,7 +14,7 @@ navbar:
         href: ./website_template/flexdashboard_website.html
     - text: "Professional Documents"
       menu:
-      - text: "Resume/CV"
+      - text: "Resume"
         href: ./website_template/resume.html
     - text: "About"
       href: ./website_template/about.html
