@@ -1,0 +1,397 @@
+---
+title: "PUBH 7462 Spatial Flexdashboard"
+author: "Jack Rabe"
+date: "4/12/2022"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+library(tidyverse)
+library(lubridate)
+library(gt)
+library(paletteer)
+library(ggridges)
+library(plotly)
+library(sf)
+library(ggmap)
+library(tidycensus)
+library(leaflet)
+library(osmdata)
+library(tigris)
+library(ggsflabel)
+library(ggthemes)
+library(flexdashboard)
+library(scales)
+
+#Working directory for .RMD
+knitr::opts_knit$set(echo = TRUE,
+                     root.dir = rprojroot::find_rstudio_root_file())
+
+#Controlling figure output in markdown
+knitr::opts_chunk$set(
+#  fig.height =   
+  fig.width = 6,
+#  fig.asp = .5,
+  out.width = "90%",
+#  out.height = 
+ fig.align  = "center",
+  cache = FALSE,
+  eval  = TRUE,
+  echo  = TRUE,
+  warning = FALSE
+)
+
+#My Colours (from viridis)
+my_purple <- "#440154FF"
+my_yellow <- "#FDE725FF"
+
+#Set Theme for ggplot2
+theme_set(theme_bw() + theme(plot.title = element_text(hjust = 0.5), legend.position = "bottom"))
+
+#Set Scientific notation output and decimal places for knitr
+options(scipen = 999)
+options(digits = 4)
+options(dplyr.summarise.inform = FALSE)
+```
+
+
+```{r, include=FALSE}
+#check out some features to
+available_tags("shop")
+```
+
+
+
+```{r, include=FALSE}
+#let grab coffee shops, ice cream shops, music stores, and art stores
+osm_shop_sf.df <- opq(bbox = "minnesota") %>%
+  add_osm_feature(key = "shop", value = c("coffee", "music", "photo")) %>% 
+  osmdata_sf()
+```
+
+
+```{r, include=FALSE}
+#Extract the relavent sf data frame
+shop_points.df <- osm_shop_sf.df$osm_points %>% 
+  janitor::clean_names() %>%
+  filter(!is.na(shop)) %>% #only retain 'valid' tags
+  dplyr::select(osm_id, name, shop, opening_hours, phone, website, geometry) %>%
+  mutate(shop = str_to_title(shop) %>% as_factor())
+
+#Check it out (minus geometry for display)
+shop_points.df %>%
+  as_tibble() %>%
+  dplyr::select(-geometry) %>%
+  gt_preview()
+```
+
+
+```{r, include=FALSE}
+#Need html tools to get our labels to render appropriately
+library(htmltools, quietly = TRUE)
+
+#Extract the levels/order of shop type factor
+shop_types <- levels(shop_points.df$shop)
+
+#Add a text label like normal
+shop_label.df <- shop_points.df %>%
+  mutate(
+    text_label = str_c(
+                   name,
+                   "<br/>Shop Type: ",
+                   shop,
+                   "<br/>Opening Hours",
+                   opening_hours,
+                   "<br/>Phone: ",
+                   phone,
+                   "<br/>Website: ",
+                   website
+                 )
+  )
+
+shop_label.df <- shop_label.df %>% 
+  mutate(
+    color = case_when(
+      shop == "Music" ~ "blue",
+      shop == "Photo" ~ "green",
+      shop == "Coffee" ~ "orange"),
+    icon = case_when(
+      shop == "Music" ~ "music",
+      shop == "Photo" ~ "camera",
+      shop == "Coffee" ~ "coffee"))
+
+# create awesome icons
+my_icons <- awesomeIcons(icon = shop_label.df$icon,
+                         markerColor = ~color,
+                         library = "fa")
+
+#Redisplay the leaflet
+shop.leaflet <- leaflet(data = shop_label.df) %>%
+  addProviderTiles(providers$OpenStreetMap.Mapnik) %>% 
+  addAwesomeMarkers(
+    icon = my_icons,
+    label   = ~map(text_label, HTML), #map over labels, make html
+  ) %>%
+  addLegend(
+    title    = "Shop",
+    position = "bottomright",
+    colors   = c("#3399FF", "#339900", "#FF9933"),
+    labels   = shop_types 
+  )
+```
+
+```{r tidy_census, include=FALSE}
+#Save the cache so you don't need to call the same API request over and over
+options(tigris_use_cache = TRUE)
+
+#Call the ACS API, returns a sf object
+mn_age.df <- get_acs(
+  geography = "tract",
+  variables = "B01002_001", #Code for median age
+  state     = "MN",
+  county    = "Hennepin",
+  year      = 2020,
+  geometry  = TRUE
+)
+```
+
+
+```{r, include=FALSE}
+#Read in zipcode data
+mn_zipcode.df <- read_csv("./data/mn_zipcodes.csv",
+                          show_col_types = FALSE) %>%
+                 mutate(
+                   zip_code = as.character(zip_code),
+                   county   = as_factor(county)
+                 ) %>%
+                 bind_rows(
+                   .,
+                   tibble(
+                     zip_code = as.character(c(55344, 55346, 55347)),
+                     city     = rep("Eden Prairie", 3),
+                     county   = rep("Hennepin", 3)
+                   )
+                 )
+
+#Save the cache so you don't need to call the same API request over and over
+options(tigris_use_cache = TRUE)
+
+#Call the ACS API, returns a sf object
+zipcode_age.df <- get_acs(
+  geography = "zip code tabulation area",
+  variables = "B01002_001", #Code for median age
+  geometry  = TRUE
+  ) %>%
+  janitor::clean_names() %>%
+  mutate(
+    zipcode = str_remove(name, "ZCTA5 ")
+  )
+
+#Inner join will perform both operations at once
+mn_zip_city.df <- inner_join(
+                    zipcode_age.df,
+                    mn_zipcode.df,
+                    by = c("zipcode" = "zip_code") #zipcode in first, zip_code second
+                  ) %>% filter(county %in% "Hennepin")
+
+#Get the bounding box and county outline
+mn.box           <- osmdata::getbb("minnesota")
+hennepin.box     <- osmdata::getbb("hennepin")
+hennepin.outline <- osmdata::getbb("hennepin", format_out = "polygon")[[1]] %>%
+  as_tibble() %>%
+  rename(longitude = V1, latitude = V2)
+```
+
+
+```{r, include=FALSE}
+#Get map from ggmap
+#Get the base map (foundational layer)
+mn_base.map <- get_map(
+                location = hennepin.box,
+                source   = "google",
+                maptype  = "roadmap",
+                crop = TRUE
+               )
+
+#Create the base map
+hennepin_base.gg <- ggmap(mn_base.map) +
+  geom_polygon(data = hennepin.outline, aes(x = longitude, y = latitude), colour = "black", size = 1.6, alpha = 0.1) +
+  theme_map() +
+  theme(
+    plot.title   = element_text(size  = 16,
+                                hjust = 0.5),
+    legend.text  = element_text(size = 16),
+    legend.title = element_text(size = 16),
+    legend.position = "right"
+  )
+
+#Add a text label to mn_income.df
+mn_age_plotly.df <- mn_zip_city.df %>%
+  mutate(
+    text_label = str_c(
+                  "City: ",
+                  city,
+                 "\nZipcode: ",
+                  zipcode,
+                  "\nMedian Age: ",
+                  estimate
+                 )
+  )
+
+#First, need to make sure the coordinate systems between the ggmap and geom_sf match
+coord_ggmap <- st_crs(hennepin_base.gg) #NA
+coord_sf    <- st_crs(mn_age_plotly.df) #NAD83
+
+#Overlay thge sf info from tidycensus ACS income estimates
+mn_age.ggmap <- hennepin_base.gg +  
+  geom_sf(data = mn_age_plotly.df, 
+          aes(fill = estimate, text = text_label),
+          colour = "black", size = 0.1,
+          inherit.aes = FALSE) + 
+  geom_path(data = hennepin.outline,
+            aes(x = longitude, y = latitude),
+            colour = "black", size = 1.2, alpha = 0.6,
+            inherit.aes = FALSE) + 
+  labs(title = "Hennepin County, MN 2020 ACS Median Age") + 
+  scale_fill_viridis_c("Median Age", option = "magma", direction = -1) +
+  theme_map() +
+  theme(
+    plot.title   = element_text(size  = 16,
+                                hjust = 0.5),
+    legend.text  = element_text(size = 16),
+    legend.title = element_text(size = 16),
+    legend.position = "right"
+  )
+```
+
+
+
+```{r, include=FALSE}
+#Create plotly
+mn_age.ggplotly <- 
+  ggplotly(mn_age.ggmap,
+         tooltip = "text",
+         height  = 600,
+         width   = 800) %>%
+    style(hoveron = "fills")
+
+#Remove a layer's particular hover info (from stack exchange)
+#Trace is 702 based on running the above mn_income.ggplotly
+mn_age.ggplotly$x$data %>% map_chr("hoverinfo") -> hover_chr_vec #To check 
+
+#Set replacement indices and values (same length, 57 + 1 = 58)
+index <- c(3, 4, 58)
+replacement <- c("skip", "skip", "skip")
+
+#For loop to replace index and info
+for (i in 1:length(index)) {
+  mn_age.ggplotly$x$data[[ index[i] ]]$hoverinfo <- replacement[i]
+}
+
+#Display
+mn_age.ggplotly
+```
+
+
+```{r, include=FALSE}
+available_tags("landuse")
+```
+
+
+```{r, include=FALSE}
+#let grab coffe shops, ice cream shops, music stores, and art stores
+osm_land_sf.df <- opq(bbox = "hennepin") %>%
+  add_osm_feature(key = "landuse", value = c("farmland", "forest", "residential", "retail")) %>% 
+  osmdata_sf()
+```
+
+
+```{r, include=FALSE}
+#Extract the relavent sf data frame
+land_poly.df <- osm_land_sf.df$osm_polygons %>% 
+  janitor::clean_names() %>%
+  filter(!is.na(landuse)) %>% #only retain 'valid' tags
+  filter(landuse %in% c("farmland", "forest", "residential", "retail")) %>% 
+  dplyr::select(osm_id, name, landuse, geometry) %>%
+  mutate(landuse = str_to_title(landuse) %>% as_factor())
+
+#Check it out (minus geometry for display)
+land_poly.df %>%
+  as_tibble() %>%
+  dplyr::select(-geometry) %>%
+  gt_preview()
+```
+
+
+```{r, include=FALSE}
+#Need html tools to get our labels to render appropriately
+library(htmltools, quietly = TRUE)
+
+#Extract the levels/order of shop type factor
+land_types <- levels(land_poly.df$landuse)
+
+#Add a text label like normal
+land_label.df <- land_poly.df %>%
+  mutate(
+    text_label = str_c(
+                   name,
+                   "<br/>Land Type: ",
+                   landuse
+                 )
+  )
+
+land_label.df <- land_label.df %>% 
+  mutate(
+    color = case_when(
+      landuse == "Farmland" ~ "orange",
+      landuse == "Forest" ~ "green",
+      landuse == "Residential" ~ "gray",
+      landuse == "Retail" ~ "purple"))
+
+#Redisplay the leaflet
+land.leaflet <- leaflet(data = land_label.df) %>%
+  addProviderTiles(providers$OpenStreetMap.Mapnik) %>% 
+  addMiniMap(
+    tiles = providers$Esri.WorldStreetMap,
+    toggleDisplay = TRUE) %>% 
+  addPolygons(
+    color = ~color,
+    label   = ~map(text_label, HTML), #map over labels, make html
+  ) %>%
+  addLegend(
+    title    = "Landuse",
+    position = "bottomright",
+    colors   = c("gray", "green", "purple", "orange"),
+    labels   = land_types 
+  )
+```
+
+
+
+Column {data-width=550}
+-----------------------------------------------------------------------
+
+### Hennepin County Median Ages
+
+```{r, echo=FALSE}
+mn_age.ggplotly
+```
+
+Column {data-width=450}
+-----------------------------------------------------------------------
+
+### Shops Across Minnesota
+
+```{r, echo=FALSE}
+shop.leaflet
+```
+
+### Landuse Across Hennepin County
+
+```{r, echo=FALSE}
+land.leaflet
+```
+

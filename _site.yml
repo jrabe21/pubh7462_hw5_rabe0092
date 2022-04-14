@@ -12,6 +12,8 @@ navbar:
         href: https://www.biorxiv.org/content/biorxiv/early/2021/08/18/2021.08.18.456828.full.pdf
       - text: "Flexdashboard"
         href: ./website_template/flexdashboard_website.html
+      - text: "Spatial Flexdashboard"
+        href: ./website_template/spat_flexdashboard.html
     - text: "Professional Documents"
       menu:
       - text: "Resume"
