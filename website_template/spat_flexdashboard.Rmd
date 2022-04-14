@@ -371,7 +371,7 @@ land.leaflet <- leaflet(data = land_label.df) %>%
 
 
 
-Column {data-width=550}
+Column {data-width=600}
 -----------------------------------------------------------------------
 
 ### Hennepin County Median Ages
@@ -380,7 +380,7 @@ Column {data-width=550}
 mn_age.ggplotly
 ```
 
-Column {data-width=450}
+Column {data-width=400}
 -----------------------------------------------------------------------
 
 ### Shops Across Minnesota
